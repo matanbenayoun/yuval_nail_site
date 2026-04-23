@@ -65,7 +65,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "oklch(0.97 0.006 65)" }}>
+    <div className="min-h-screen pb-24" style={{ background: "oklch(0.97 0.008 222)" }}>
 
       {/* ── Fixed Header ───────────────────────────────────────────────────── */}
       <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b border-border/60">
@@ -102,7 +102,7 @@ export default function AdminPage() {
         {/* ── Stats ──────────────────────────────────────────────────────────── */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: "סה\"כ", value: stats.total, icon: CalendarDays, color: "oklch(0.61 0.072 62)" },
+            { label: "סה\"כ", value: stats.total, icon: CalendarDays, color: "oklch(0.55 0.18 222)" },
             { label: "היום",  value: stats.today,  icon: Clock,         color: "oklch(0.55 0.15 145)" },
             { label: "ממתינים", value: stats.pending, icon: Timer,      color: "oklch(0.65 0.14 65)"  },
           ].map(({ label, value, icon: Icon, color }) => (
@@ -129,7 +129,7 @@ export default function AdminPage() {
                   ? "text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
-              style={tab === t ? { background: "oklch(0.61 0.072 62)" } : {}}
+              style={tab === t ? { background: "oklch(0.55 0.18 222)" } : {}}
             >
               {t === "appointments" ? "📅 תורים" : "🖼️ גלריה"}
             </button>
@@ -163,7 +163,7 @@ export default function AdminPage() {
                       ? "text-primary-foreground border-transparent"
                       : "bg-white border-border/60 text-muted-foreground hover:border-border"
                   }`}
-                  style={statusFilter === s ? { background: "oklch(0.61 0.072 62)" } : {}}
+                  style={statusFilter === s ? { background: "oklch(0.55 0.18 222)" } : {}}
                 >
                   {s === "all" ? "הכל" : STATUS_CONFIG[s].label}
                   {s !== "all" && (
@@ -192,18 +192,18 @@ export default function AdminPage() {
                       {/* Date block */}
                       <div
                         className="flex flex-col items-center justify-center rounded-xl px-3 py-2 min-w-[58px] shrink-0"
-                        style={{ background: "oklch(0.89 0.022 65)" }}
+                        style={{ background: "oklch(0.90 0.03 222)" }}
                       >
                         <span
                           className="text-xl font-semibold leading-none"
-                          style={{ color: "oklch(0.52 0.078 60)" }}
+                          style={{ color: "oklch(0.45 0.15 222)" }}
                         >
                           {new Date(apt.date).getDate()}
                         </span>
                         <span className="text-[10px] text-muted-foreground mt-0.5">
                           {new Date(apt.date).toLocaleString("he-IL", { month: "short" })}
                         </span>
-                        <span className="text-xs font-medium mt-1" style={{ color: "oklch(0.52 0.078 60)" }}>
+                        <span className="text-xs font-medium mt-1" style={{ color: "oklch(0.45 0.15 222)" }}>
                           {apt.time}
                         </span>
                       </div>
@@ -269,7 +269,7 @@ export default function AdminPage() {
               variant="outline"
               className="w-full rounded-2xl h-14 border-dashed border-2 text-sm gap-2 border-primary/30 hover:border-primary/60 hover:bg-accent"
             >
-              <ImagePlus size={18} style={{ color: "oklch(0.61 0.072 62)" }} />
+              <ImagePlus size={18} style={{ color: "oklch(0.55 0.18 222)" }} />
               העלאת תמונה
             </Button>
 
@@ -278,35 +278,62 @@ export default function AdminPage() {
                 אין תמונות בגלריה עדיין
               </p>
             ) : (
-              <div className="grid grid-cols-2 gap-3">
-                {images.map((img) => (
-                  <div key={img.id} className="relative group rounded-2xl overflow-hidden aspect-square">
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: img.background }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/15 via-transparent to-transparent" />
-
-                    {/* Name label */}
-                    <div className="absolute bottom-0 start-0 end-0 px-3 py-2 bg-gradient-to-t from-black/40 to-transparent">
-                      <p className="text-xs text-white font-medium truncate">{img.name}</p>
+              <>
+                {/* Static images from public/gallery/ */}
+                {images.some((i) => i.source === "static" || i.source === "gradient") && (
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full inline-block" style={{ background: "oklch(0.55 0.18 222)" }} />
+                      מהתיקייה (public/gallery)
+                    </p>
+                    <div className="grid grid-cols-2 gap-3">
+                      {images.filter((i) => i.source === "static" || i.source === "gradient").map((img) => (
+                        <div key={img.id} className="relative rounded-2xl overflow-hidden aspect-square">
+                          <div className="absolute inset-0" style={{ background: img.background }} />
+                          <div className="absolute inset-0 bg-gradient-to-br from-white/15 via-transparent to-transparent" />
+                          <div className="absolute bottom-0 start-0 end-0 px-3 py-2 bg-gradient-to-t from-black/40 to-transparent">
+                            <p className="text-xs text-white font-medium truncate">{img.name}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-
-                    {/* Delete button */}
-                    <button
-                      onClick={() => removeImage(img.id)}
-                      className="absolute top-2 end-2 w-8 h-8 rounded-full bg-red-500/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                      aria-label="מחקי תמונה"
-                    >
-                      <Trash2 size={13} />
-                    </button>
                   </div>
-                ))}
-              </div>
+                )}
+
+                {/* Admin-uploaded images (deletable) */}
+                {images.some((i) => i.source === "upload") && (
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full inline-block bg-green-500" />
+                      הועלו מהאדמין
+                    </p>
+                    <div className="grid grid-cols-2 gap-3">
+                      {images.filter((i) => i.source === "upload").map((img) => (
+                        <div key={img.id} className="relative group rounded-2xl overflow-hidden aspect-square">
+                          <div className="absolute inset-0" style={{ background: img.background }} />
+                          <div className="absolute inset-0 bg-gradient-to-br from-white/15 via-transparent to-transparent" />
+                          <div className="absolute bottom-0 start-0 end-0 px-3 py-2 bg-gradient-to-t from-black/40 to-transparent">
+                            <p className="text-xs text-white font-medium truncate">{img.name}</p>
+                          </div>
+                          <button
+                            onClick={() => removeImage(img.id)}
+                            className="absolute top-2 end-2 w-8 h-8 rounded-full bg-red-500/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                            aria-label="מחקי תמונה"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             <p className="text-xs text-muted-foreground text-center pb-2">
-              {images.length} תמונות בגלריה · שינויים מיד גלויים לציבור
+              {images.filter(i => i.source === "static").length} תמונות מהתיקייה
+              {images.filter(i => i.source === "upload").length > 0 &&
+                ` · ${images.filter(i => i.source === "upload").length} שהועלו`}
             </p>
           </div>
         )}

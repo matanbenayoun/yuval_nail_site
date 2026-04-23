@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import BookingForm from "@/components/BookingForm"
+import WhatsAppButton from "@/components/WhatsAppButton"
 
 export default function BookingPage() {
   return (
@@ -23,10 +24,11 @@ export default function BookingPage() {
       <div className="max-w-lg mx-auto px-5 py-8">
         <p className="text-sm text-muted-foreground text-center mb-8 leading-relaxed">
           בחרי תאריך, שעה ושירות מועדפים.
-          <br />ימי ראשון סגורים.
+          <br />ימי שבת סגורים.
         </p>
         <BookingForm />
       </div>
+      <WhatsAppButton />
     </div>
   )
 }

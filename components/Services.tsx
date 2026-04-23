@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Sparkles, RefreshCw, Palette, Clock, ArrowLeft } from "lucide-react"
+import { Sparkles, RefreshCw, Paintbrush, Clock, ArrowLeft, Star } from "lucide-react"
 
 const services = [
   {
@@ -10,7 +10,17 @@ const services = [
     description: "ציפוי ג'ל עמיד ומבריק עם שכבת הכנה מושלמת. גימור ללא סדקים שנשאר מושלם ל-3-4 שבועות.",
     duration: "60 דקות",
     price: "₪180",
-    tag: "הכי פופולרי",
+    tag: null,
+    highlight: false,
+  },
+  {
+    icon: Paintbrush,
+    name: "ציורים בלק ג'ל יד",
+    description: "עיצובים מקוריים מצוירים ביד בלק ג'ל — השירות הייחודי של יובל. פרחים, נוף, אבסטרקט ועוד. כל עיצוב חד-פעמי.",
+    duration: "90 דקות",
+    price: "מ-₪220",
+    tag: "הייחוד שלנו",
+    highlight: true,
   },
   {
     icon: RefreshCw,
@@ -19,14 +29,7 @@ const services = [
     duration: "45 דקות",
     price: "₪140",
     tag: null,
-  },
-  {
-    icon: Palette,
-    name: "אמנות ציפורניים",
-    description: "עיצובים מצוירים ביד, אבקות כרום, רדידים ועיטורים תלת-מימדיים. ממינימליסטי למרשים.",
-    duration: "90 דקות",
-    price: "מ-₪220",
-    tag: "פרימיום",
+    highlight: false,
   },
 ]
 
@@ -37,7 +40,7 @@ export default function Services() {
         <div className="flex flex-col items-center text-center mb-12 gap-3">
           <span className="text-xs tracking-widest text-muted-foreground">מה אנחנו מציעות</span>
           <h2 className="text-3xl md:text-5xl font-semibold">השירותים שלנו</h2>
-          <div className="w-10 h-0.5 mt-1" style={{ background: "oklch(0.61 0.072 62)" }} />
+          <div className="w-10 h-0.5 mt-1" style={{ background: "oklch(0.55 0.18 222)" }} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -46,22 +49,37 @@ export default function Services() {
             return (
               <Card
                 key={service.name}
-                className="group relative border-border/60 hover:border-primary/40 hover:shadow-lg transition-all duration-300 overflow-hidden"
+                className={`group relative hover:shadow-lg transition-all duration-300 overflow-hidden ${
+                  service.highlight
+                    ? "border-2"
+                    : "border border-border/60"
+                }`}
+                style={service.highlight ? { borderColor: "oklch(0.55 0.18 222)" } : {}}
               >
                 {service.tag && (
                   <span
-                    className="absolute top-4 start-4 text-[10px] tracking-wide px-3 py-1 rounded-full text-primary-foreground"
-                    style={{ background: "oklch(0.61 0.072 62)" }}
+                    className="absolute top-4 start-4 text-[10px] tracking-wide px-3 py-1 rounded-full text-primary-foreground flex items-center gap-1"
+                    style={{ background: "oklch(0.55 0.18 222)" }}
                   >
+                    <Star size={9} fill="currentColor" />
                     {service.tag}
                   </span>
                 )}
+
+                {/* Highlight glow */}
+                {service.highlight && (
+                  <div
+                    className="absolute inset-0 opacity-5 pointer-events-none"
+                    style={{ background: "oklch(0.55 0.18 222)" }}
+                  />
+                )}
+
                 <CardContent className="pt-8 pb-7 px-6 flex flex-col gap-4">
                   <div
                     className="w-11 h-11 rounded-full flex items-center justify-center"
-                    style={{ background: "oklch(0.89 0.022 65)" }}
+                    style={{ background: "oklch(0.90 0.03 222)" }}
                   >
-                    <Icon size={18} style={{ color: "oklch(0.61 0.072 62)" }} />
+                    <Icon size={18} style={{ color: "oklch(0.55 0.18 222)" }} />
                   </div>
 
                   <div>
@@ -76,7 +94,7 @@ export default function Services() {
                     </div>
                     <span
                       className="text-base font-semibold me-auto"
-                      style={{ color: "oklch(0.61 0.072 62)" }}
+                      style={{ color: "oklch(0.55 0.18 222)" }}
                     >
                       {service.price}
                     </span>

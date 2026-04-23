@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import InstagramIcon from "@/components/InstagramIcon"
+import { SITE_CONFIG } from "@/lib/config"
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -22,21 +24,27 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-        <Link href="/" className="text-base md:text-lg tracking-wide font-semibold leading-tight text-center">
+        <Link href="/" className="text-base md:text-lg tracking-wide font-semibold leading-tight">
           יובל סין ראובן<br />
           <span className="text-xs font-light tracking-widest text-muted-foreground">ציפורניים</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 text-sm tracking-wide font-light">
+        <nav className="hidden md:flex items-center gap-7 text-sm font-light">
           <a href="#services" className="hover:opacity-60 transition-opacity">שירותים</a>
           <a href="#gallery" className="hover:opacity-60 transition-opacity">גלריה</a>
+          <a
+            href={SITE_CONFIG.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-60 transition-opacity flex items-center gap-1.5"
+            aria-label="Instagram"
+          >
+            <InstagramIcon size={17} />
+          </a>
         </nav>
 
         <div className="hidden md:block">
-          <Button
-            render={<Link href="/booking" />}
-            className="tracking-wide text-sm px-6 rounded-full"
-          >
+          <Button render={<Link href="/booking" />} className="text-sm px-6 rounded-full">
             הזמיני תור
           </Button>
         </div>
@@ -52,17 +60,19 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-border px-5 py-5 flex flex-col gap-1">
+          <a href="#services" className="py-3 text-base font-light" onClick={() => setMenuOpen(false)}>שירותים</a>
+          <a href="#gallery" className="py-3 text-base font-light" onClick={() => setMenuOpen(false)}>גלריה</a>
           <a
-            href="#services"
-            className="py-3 text-base font-light"
+            href={SITE_CONFIG.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-3 text-base font-light flex items-center gap-2"
             onClick={() => setMenuOpen(false)}
-          >שירותים</a>
-          <a
-            href="#gallery"
-            className="py-3 text-base font-light"
-            onClick={() => setMenuOpen(false)}
-          >גלריה</a>
-          <div className="pt-3 border-t border-border mt-2">
+          >
+            <InstagramIcon size={18} />
+            Instagram
+          </a>
+          <div className="pt-3 border-t border-border mt-1">
             <Button
               render={<Link href="/booking" onClick={() => setMenuOpen(false)} />}
               className="w-full text-sm rounded-full"

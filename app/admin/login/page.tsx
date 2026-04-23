@@ -43,16 +43,16 @@ export default function AdminLoginPage() {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-5"
-      style={{ background: "linear-gradient(135deg, oklch(0.98 0.004 65) 0%, oklch(0.89 0.028 68) 100%)" }}
+      style={{ background: "linear-gradient(135deg, oklch(0.98 0.005 222) 0%, oklch(0.89 0.025 222) 100%)" }}
     >
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-10">
           <div
             className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-            style={{ background: "oklch(0.89 0.022 65)" }}
+            style={{ background: "oklch(0.90 0.03 222)" }}
           >
-            <Lock size={22} style={{ color: "oklch(0.61 0.072 62)" }} />
+            <Lock size={22} style={{ color: "oklch(0.55 0.18 222)" }} />
           </div>
           <h1 className="text-xl font-semibold">כניסה לניהול</h1>
           <p className="text-sm text-muted-foreground mt-1">יובל סין ראובן - ציפורניים</p>
