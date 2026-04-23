@@ -33,14 +33,14 @@ export default function BookingForm() {
 
   const dateStr = date ? toDateString(date) : ""
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
     if (!service) { setError("נא לבחור שירות."); return }
     if (!name.trim() || name.trim().length < 2) { setError("נא להזין שם מלא (לפחות 2 תווים)."); return }
     if (!phone.trim() || phone.trim().length < 9) { setError("נא להזין מספר טלפון תקין."); return }
     if (!policyAccepted) { setError("יש לאשר את מדיניות הביטולים כדי להמשיך."); return }
-    addAppointment({ name: name.trim(), phone: phone.trim(), service, date: dateStr, time })
+    await addAppointment({ name: name.trim(), phone: phone.trim(), service, date: dateStr, time })
     setSubmitted(true)
   }
 

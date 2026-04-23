@@ -8,10 +8,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
+  const sessionSecret = process.env.ADMIN_SESSION_SECRET
   const authCookie = request.cookies.get("admin_auth")
-  const sessionSecret = process.env.ADMIN_SESSION_SECRET || ""
 
-  if (!authCookie?.value || authCookie.value !== sessionSecret) {
+  if (!sessionSecret || !authCookie?.value || authCookie.value !== sessionSecret) {
     return NextResponse.redirect(new URL("/admin/login", request.url))
   }
 
