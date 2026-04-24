@@ -41,7 +41,7 @@ export default function Hero() {
       <FloatingNail className="bottom-[22%] start-[10%] w-5 -rotate-[15deg] opacity-[0.06] -z-10" />
       <FloatingNail className="bottom-[12%] end-[20%] w-5 rotate-[40deg] opacity-[0.08] -z-10" />
 
-      <div className="max-w-6xl mx-auto px-5 pt-24 pb-16 flex flex-col items-center text-center gap-7">
+      <div className="max-w-2xl mx-auto px-5 pt-24 pb-16 flex flex-col items-center text-center gap-7">
         {/* Location + specialty badge — wrapped in soft card */}
         <div className="border border-border/40 rounded-2xl px-6 py-3 bg-white/40 backdrop-blur-sm flex flex-col items-center gap-2">
           <div className="flex items-center gap-2 text-xs tracking-widest text-muted-foreground">
@@ -58,7 +58,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <h1 className="text-5xl sm:text-7xl md:text-8xl font-light leading-tight tracking-tight">
+        <h1 className="text-5xl font-light leading-tight tracking-tight">
           ציפורניים
           <br />
           <span className="font-semibold" style={{ color: "oklch(0.55 0.18 222)" }}>כאמנות.</span>
@@ -70,7 +70,7 @@ export default function Hero() {
           כל ציפורן מספרת סיפור.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+        <div className="flex flex-col gap-3 w-full">
           <Button
             render={<Link href="/booking" />}
             size="lg"

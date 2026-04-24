@@ -29,16 +29,16 @@ function Stars() {
 export default function Testimonials() {
   return (
     <section className="py-20 px-5" style={{ background: "oklch(0.96 0.01 222)" }}>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-12 gap-3">
           <span className="text-xs tracking-widest text-muted-foreground">מה אומרות הלקוחות</span>
-          <h2 className="text-3xl md:text-5xl font-semibold">הן מדברות, לא אנחנו</h2>
+          <h2 className="text-3xl font-semibold">הן מדברות, לא אנחנו</h2>
           <div className="w-10 h-0.5 mt-1" style={{ background: "oklch(0.55 0.18 222)" }} />
         </div>
 
         {/* Review cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 gap-5">
           {reviews.map((review) => (
             <Card key={review.name} className="border border-border/60 shadow-none">
               <CardContent className="pt-6 pb-6 px-6 flex flex-col gap-4 h-full">

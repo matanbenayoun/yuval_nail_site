@@ -24,7 +24,7 @@ export default function Navbar() {
         scrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+      <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between">
         <Link href="/">
           <Logo size="sm" />
         </Link>
