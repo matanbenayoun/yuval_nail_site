@@ -5,7 +5,7 @@ import WhatsAppButton from "@/components/WhatsAppButton"
 
 export default function BookingPage() {
   return (
-    <div className="min-h-screen" style={{ background: "oklch(0.98 0.004 65)" }}>
+    <div className="min-h-screen" style={{ background: "oklch(0.98 0.005 222)" }}>
       <div className="border-b border-border/60 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-5 h-16 flex items-center gap-3">
           <Link

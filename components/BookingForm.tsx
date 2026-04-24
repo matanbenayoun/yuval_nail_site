@@ -12,7 +12,8 @@ import CancellationPolicyModal from "@/components/CancellationPolicyModal"
 import { CheckCircle, Clock, CalendarDays, User, Phone, Sparkles, AlertCircle } from "lucide-react"
 import { SITE_CONFIG } from "@/lib/config"
 
-const TIME_SLOTS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
+const ALL_TIME_SLOTS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"]
+const FRIDAY_SLOTS = ["09:00", "10:00", "11:00", "12:00", "13:00"]
 const SERVICES = ["מניקור ג'ל", "ציורים בלק ג'ל יד", "תוספות ותחזוקה"]
 const SERVICE_DURATION: Record<string, number> = {
   "מניקור ג'ל": 60,
@@ -70,6 +71,47 @@ function appleCalendarIcs(service: string, dateStr: string, timeStr: string) {
   return `data:text/calendar;charset=utf8,${encodeURIComponent(ics)}`
 }
 
+function StepIndicator({ step }: { step: 1 | 2 | 3 }) {
+  const steps: { n: 1 | 2 | 3; label: string }[] = [
+    { n: 1, label: "תאריך" },
+    { n: 2, label: "שעה" },
+    { n: 3, label: "פרטים" },
+  ]
+  return (
+    <div className="flex items-start justify-center">
+      {steps.map(({ n, label }, i) => {
+        const done = step > n
+        const active = step === n
+        return (
+          <div key={n} className="flex items-start">
+            <div className="flex flex-col items-center gap-1.5">
+              <div
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                  done || active ? "text-white" : "border-2 border-border text-muted-foreground"
+                }`}
+                style={done || active ? { background: "oklch(0.55 0.18 222)" } : {}}
+              >
+                {done ? (
+                  <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+                    <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : n}
+              </div>
+              <span className={`text-xs ${active ? "font-medium" : "text-muted-foreground"}`}>{label}</span>
+            </div>
+            {i < steps.length - 1 && (
+              <div
+                className="w-16 sm:w-20 h-0.5 mx-2 mt-[18px] transition-all duration-500"
+                style={{ background: step > n ? "oklch(0.55 0.18 222)" : "oklch(0.88 0.018 222)" }}
+              />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function BookingForm() {
   const { addAppointment, isTimeBooked } = useBooking()
   const router = useRouter()
@@ -84,6 +126,9 @@ export default function BookingForm() {
   const [error, setError] = useState("")
 
   const dateStr = date ? toDateString(date) : ""
+  const isFriday = date?.getDay() === 5
+  const timeSlots = isFriday ? FRIDAY_SLOTS : ALL_TIME_SLOTS
+  const currentStep: 1 | 2 | 3 = !date ? 1 : !time ? 2 : 3
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -168,6 +213,8 @@ export default function BookingForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      <StepIndicator step={currentStep} />
+
       {/* Step 1: Date */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-sm font-medium">
@@ -179,7 +226,7 @@ export default function BookingForm() {
             mode="single"
             selected={date}
             onSelect={(d) => { setDate(d); setTime("") }}
-            disabled={(d) => d < new Date(new Date().setHours(0, 0, 0, 0)) || d.getDay() === 0}
+            disabled={(d) => d < new Date(new Date().setHours(0, 0, 0, 0)) || d.getDay() === 6}
             className="rounded-xl border border-border/60"
           />
         </div>
@@ -192,8 +239,8 @@ export default function BookingForm() {
             <Clock size={16} style={{ color: "oklch(0.55 0.18 222)" }} />
             <span>בחרי שעה</span>
           </div>
-          <div className="grid grid-cols-4 gap-2">
-            {TIME_SLOTS.map((slot) => {
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+            {timeSlots.map((slot) => {
               const booked = isTimeBooked(dateStr, slot)
               return (
                 <button
