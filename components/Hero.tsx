@@ -3,15 +3,29 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Sparkles, Paintbrush } from "lucide-react"
 import { SITE_CONFIG } from "@/lib/config"
 
+const NAIL_PATH = "M18,3 C11,3 8,10 8,18 C8,26 12,35 18,37 C24,35 28,26 28,18 C28,10 25,3 18,3 Z"
+
+function FloatingNail({ className }: { className: string }) {
+  return (
+    <div className={`absolute pointer-events-none ${className}`} aria-hidden="true">
+      <svg viewBox="0 0 36 40" fill="oklch(0.55 0.18 222)" className="w-full h-full">
+        <path d={NAIL_PATH} />
+      </svg>
+    </div>
+  )
+}
+
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background gradient */}
       <div
         className="absolute inset-0 -z-10"
         style={{
           background: "linear-gradient(135deg, oklch(0.98 0.005 222) 0%, oklch(0.93 0.018 222) 40%, oklch(0.89 0.025 222) 100%)",
         }}
       />
+      {/* Decorative blur circles */}
       <div
         className="absolute -top-24 -left-24 w-96 h-96 rounded-full opacity-30 -z-10"
         style={{ background: "radial-gradient(circle, oklch(0.82 0.05 222), transparent 70%)" }}
@@ -20,16 +34,21 @@ export default function Hero() {
         className="absolute -bottom-32 -right-32 w-[28rem] h-[28rem] rounded-full opacity-20 -z-10"
         style={{ background: "radial-gradient(circle, oklch(0.72 0.09 222), transparent 70%)" }}
       />
+      {/* Floating nail silhouettes */}
+      <FloatingNail className="top-[14%] end-[12%] w-6 rotate-[20deg] opacity-[0.07] -z-10" />
+      <FloatingNail className="top-[28%] start-[7%] w-5 -rotate-[30deg] opacity-[0.05] -z-10" />
+      <FloatingNail className="top-[55%] end-[6%] w-7 rotate-[10deg] opacity-[0.09] -z-10" />
+      <FloatingNail className="bottom-[22%] start-[10%] w-5 -rotate-[15deg] opacity-[0.06] -z-10" />
+      <FloatingNail className="bottom-[12%] end-[20%] w-5 rotate-[40deg] opacity-[0.08] -z-10" />
 
       <div className="max-w-6xl mx-auto px-5 pt-24 pb-16 flex flex-col items-center text-center gap-7">
-        {/* Location + specialty badge */}
-        <div className="flex flex-col items-center gap-2">
+        {/* Location + specialty badge — wrapped in soft card */}
+        <div className="border border-border/40 rounded-2xl px-6 py-3 bg-white/40 backdrop-blur-sm flex flex-col items-center gap-2">
           <div className="flex items-center gap-2 text-xs tracking-widest text-muted-foreground">
             <Sparkles size={11} />
             <span>סטודיו לציפורניים · {SITE_CONFIG.city}</span>
             <Sparkles size={11} />
           </div>
-          {/* Specialty pill */}
           <div
             className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full"
             style={{ background: "oklch(0.90 0.03 222)", color: "oklch(0.45 0.15 222)" }}

@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import InstagramIcon from "@/components/InstagramIcon"
+import Logo from "@/components/Logo"
 import { SITE_CONFIG } from "@/lib/config"
 
 export default function Navbar() {
@@ -24,9 +25,8 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-        <Link href="/" className="text-base md:text-lg tracking-wide font-semibold leading-tight">
-          יובל סין ראובן<br />
-          <span className="text-xs font-light tracking-widest text-muted-foreground">ציפורניים</span>
+        <Link href="/">
+          <Logo size="sm" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-7 text-sm font-light">

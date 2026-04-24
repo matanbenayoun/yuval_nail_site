@@ -13,15 +13,7 @@ import { whatsappHref } from "@/lib/config"
 export default function CancellationPolicyModal() {
   return (
     <Dialog>
-      <DialogTrigger
-        render={
-          <button
-            type="button"
-            className="text-xs underline underline-offset-2 text-muted-foreground hover:text-foreground transition-colors"
-            style={{ color: "oklch(0.61 0.072 62)" }}
-          />
-        }
-      >
+      <DialogTrigger render={<button type="button" className="text-xs underline underline-offset-2 hover:text-foreground transition-colors" style={{ color: "oklch(0.55 0.18 222)" }} />}>
         מדיניות ביטולים
       </DialogTrigger>
 
