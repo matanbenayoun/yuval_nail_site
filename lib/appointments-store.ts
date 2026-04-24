@@ -29,3 +29,9 @@ export function updateStatus(id: string, status: AppointmentStatus): Appointment
   apt.status = status
   return apt
 }
+
+export function remove(id: string): boolean {
+  const before = g._appointments!.length
+  g._appointments = g._appointments!.filter((a) => a.id !== id)
+  return g._appointments.length < before
+}

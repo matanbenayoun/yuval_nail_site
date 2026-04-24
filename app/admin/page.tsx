@@ -23,7 +23,7 @@ function formatDate(d: string) {
 
 // ─── Admin Page ───────────────────────────────────────────────────────────────
 export default function AdminPage() {
-  const { appointments, updateStatus } = useBooking()
+  const { appointments, updateStatus, deleteAppointment } = useBooking()
   const { images, addImage, removeImage } = useGallery()
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -215,18 +215,32 @@ export default function AdminPage() {
                             <User size={12} className="text-muted-foreground shrink-0" />
                             <span className="text-sm font-medium truncate">{apt.name}</span>
                           </div>
-                          {/* Status toggle badge */}
-                          <button
-                            onClick={() => updateStatus(apt.id, statusCfg.next)}
-                            title="לחצי לשינוי סטטוס"
-                          >
-                            <Badge
-                              variant="outline"
-                              className={`text-[10px] shrink-0 cursor-pointer hover:opacity-80 transition-opacity ${statusCfg.className}`}
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {/* Status toggle badge */}
+                            <button
+                              onClick={() => updateStatus(apt.id, statusCfg.next)}
+                              title="לחצי לשינוי סטטוס"
                             >
-                              {statusCfg.label}
-                            </Badge>
-                          </button>
+                              <Badge
+                                variant="outline"
+                                className={`text-[10px] cursor-pointer hover:opacity-80 transition-opacity ${statusCfg.className}`}
+                              >
+                                {statusCfg.label}
+                              </Badge>
+                            </button>
+                            {/* Delete button */}
+                            <button
+                              onClick={() => {
+                                if (confirm(`למחוק את התור של ${apt.name}?`)) {
+                                  deleteAppointment(apt.id)
+                                }
+                              }}
+                              className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground hover:bg-red-50 hover:text-red-500 transition-colors"
+                              title="מחיקת תור"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
                         </div>
 
                         <div className="flex items-center gap-1.5">

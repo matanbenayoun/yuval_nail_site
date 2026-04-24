@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { updateStatus } from "@/lib/appointments-store"
+import { updateStatus, remove } from "@/lib/appointments-store"
 
 export async function PATCH(
   req: Request,
@@ -10,4 +10,14 @@ export async function PATCH(
   const updated = updateStatus(id, status)
   if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 })
   return NextResponse.json(updated)
+}
+
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
+  const deleted = remove(id)
+  if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  return NextResponse.json({ success: true })
 }

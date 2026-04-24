@@ -9,6 +9,7 @@ interface BookingContextType {
   appointments: Appointment[]
   addAppointment: (apt: Omit<Appointment, "id" | "createdAt" | "status">) => Promise<void>
   updateStatus: (id: string, status: AppointmentStatus) => Promise<void>
+  deleteAppointment: (id: string) => Promise<void>
   isTimeBooked: (date: string, time: string) => boolean
 }
 
@@ -47,6 +48,13 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  async function deleteAppointment(id: string) {
+    const res = await fetch(`/api/appointments/${id}`, { method: "DELETE" })
+    if (res.ok) {
+      setAppointments((prev) => prev.filter((a) => a.id !== id))
+    }
+  }
+
   function isTimeBooked(date: string, time: string) {
     return appointments.some(
       (a) => a.date === date && a.time === time && a.status !== "cancelled"
@@ -54,7 +62,7 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <BookingContext.Provider value={{ appointments, addAppointment, updateStatus, isTimeBooked }}>
+    <BookingContext.Provider value={{ appointments, addAppointment, updateStatus, deleteAppointment, isTimeBooked }}>
       {children}
     </BookingContext.Provider>
   )
