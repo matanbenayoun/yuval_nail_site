@@ -65,9 +65,9 @@ export default function AdminPage() {
     router.refresh()
   }
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || [])
-    files.forEach(addImage)
+    for (const file of files) await addImage(file)
     e.target.value = ""
   }
 
