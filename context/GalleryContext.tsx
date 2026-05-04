@@ -59,7 +59,7 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
       ...prev,
       {
         id: crypto.randomUUID(),
-        name: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
+        name: "",
         background: `url(${blobUrl}) center/cover no-repeat`,
         source: "upload" as const,
         blobUrl,

@@ -94,20 +94,6 @@ export default function Hero() {
           </Button>
         </div>
 
-        <div className="flex gap-10 mt-2 pt-8 border-t border-border/60 w-full justify-center">
-          {[
-            { value: "+500", label: "לקוחות מרוצות" },
-            { value: "3", label: "שנות ניסיון" },
-            { value: "100%", label: "ציורי יד" },
-          ].map((stat) => (
-            <div key={stat.label} className="flex flex-col items-center gap-1">
-              <span className="text-2xl md:text-3xl font-semibold" style={{ color: "oklch(0.55 0.18 222)" }}>
-                {stat.value}
-              </span>
-              <span className="text-xs text-muted-foreground">{stat.label}</span>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   )

@@ -6,26 +6,37 @@ import { Calendar } from "@/components/ui/calendar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useBooking } from "@/context/BookingContext"
+import { useBooking, SERVICE_DURATIONS } from "@/context/BookingContext"
 import CancellationPolicyModal from "@/components/CancellationPolicyModal"
-import { CheckCircle, Clock, CalendarDays, User, Phone, Sparkles, AlertCircle } from "lucide-react"
-import { SITE_CONFIG } from "@/lib/config"
+import { CheckCircle, Clock, CalendarDays, User, Phone, Sparkles, AlertCircle, MessageCircle } from "lucide-react"
+import { SITE_CONFIG, whatsappHref } from "@/lib/config"
 
+const SERVICES = ["לק ג'ל", "בנייה בג'ל", "ציור פשוט", "ציור מורכב"]
+const DRAWING_SERVICES = new Set(["ציור פשוט", "ציור מורכב"])
+
+// Per-day time slot rules
 const ALL_TIME_SLOTS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"]
-const FRIDAY_SLOTS = ["09:00", "10:00", "11:00", "12:00", "13:00"]
-const SERVICES = ["מניקור ג'ל", "ציורים בלק ג'ל יד", "תוספות ותחזוקה"]
-const SERVICE_DURATION: Record<string, number> = {
-  "מניקור ג'ל": 60,
-  "ציורים בלק ג'ל יד": 90,
-  "תוספות ותחזוקה": 45,
+function timeToMinutes(t: string) {
+  const [h, m] = t.split(":").map(Number)
+  return h * 60 + m
+}
+
+function getSlotsForDay(dayOfWeek: number, durationMin: number): string[] {
+  // Friday = closed, Saturday = closed (handled at calendar level)
+  let base = ALL_TIME_SLOTS
+  if (dayOfWeek === 4) {
+    // Thursday — must finish by 15:00
+    base = ALL_TIME_SLOTS.filter((t) => timeToMinutes(t) + durationMin <= 15 * 60)
+  }
+  // Remove slots where appointment would end after 19:00
+  return base.filter((t) => timeToMinutes(t) + durationMin <= 19 * 60)
 }
 
 function toDateString(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0")
-  const day = String(date.getDate()).padStart(2, "0")
-  return `${year}-${month}-${day}`
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, "0")
+  const d = String(date.getDate()).padStart(2, "0")
+  return `${y}-${m}-${d}`
 }
 
 function calendarDates(dateStr: string, timeStr: string, durationMin: number) {
@@ -40,7 +51,7 @@ function calendarDates(dateStr: string, timeStr: string, durationMin: number) {
 }
 
 function googleCalendarUrl(service: string, dateStr: string, timeStr: string) {
-  const dur = SERVICE_DURATION[service] ?? 60
+  const dur = SERVICE_DURATIONS[service] ?? 90
   const { start, end } = calendarDates(dateStr, timeStr, dur)
   const params = new URLSearchParams({
     action: "TEMPLATE",
@@ -53,7 +64,7 @@ function googleCalendarUrl(service: string, dateStr: string, timeStr: string) {
 }
 
 function appleCalendarIcs(service: string, dateStr: string, timeStr: string) {
-  const dur = SERVICE_DURATION[service] ?? 60
+  const dur = SERVICE_DURATIONS[service] ?? 90
   const { start, end } = calendarDates(dateStr, timeStr, dur)
   const ics = [
     "BEGIN:VCALENDAR",
@@ -71,11 +82,12 @@ function appleCalendarIcs(service: string, dateStr: string, timeStr: string) {
   return `data:text/calendar;charset=utf8,${encodeURIComponent(ics)}`
 }
 
-function StepIndicator({ step }: { step: 1 | 2 | 3 }) {
-  const steps: { n: 1 | 2 | 3; label: string }[] = [
-    { n: 1, label: "תאריך" },
-    { n: 2, label: "שעה" },
-    { n: 3, label: "פרטים" },
+function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 }) {
+  const steps: { n: 1 | 2 | 3 | 4; label: string }[] = [
+    { n: 1, label: "שירות" },
+    { n: 2, label: "תאריך" },
+    { n: 3, label: "שעה" },
+    { n: 4, label: "פרטים" },
   ]
   return (
     <div className="flex items-start justify-center">
@@ -86,22 +98,22 @@ function StepIndicator({ step }: { step: 1 | 2 | 3 }) {
           <div key={n} className="flex items-start">
             <div className="flex flex-col items-center gap-1.5">
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 ${
                   done || active ? "text-white" : "border-2 border-border text-muted-foreground"
                 }`}
                 style={done || active ? { background: "oklch(0.55 0.18 222)" } : {}}
               >
                 {done ? (
-                  <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
-                    <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                    <path d="M1 4.5L4 7.5L10 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ) : n}
               </div>
-              <span className={`text-xs ${active ? "font-medium" : "text-muted-foreground"}`}>{label}</span>
+              <span className={`text-[10px] ${active ? "font-medium" : "text-muted-foreground"}`}>{label}</span>
             </div>
             {i < steps.length - 1 && (
               <div
-                className="w-16 sm:w-20 h-0.5 mx-2 mt-[18px] transition-all duration-500"
+                className="w-10 sm:w-14 h-0.5 mx-1.5 mt-4 transition-all duration-500"
                 style={{ background: step > n ? "oklch(0.55 0.18 222)" : "oklch(0.88 0.018 222)" }}
               />
             )}
@@ -113,12 +125,12 @@ function StepIndicator({ step }: { step: 1 | 2 | 3 }) {
 }
 
 export default function BookingForm() {
-  const { addAppointment, isTimeBooked } = useBooking()
+  const { addAppointment, isSlotAvailable, isDateFullyBlocked } = useBooking()
   const router = useRouter()
 
+  const [service, setService] = useState<string>("")
   const [date, setDate] = useState<Date | undefined>()
   const [time, setTime] = useState<string>("")
-  const [service, setService] = useState<string>("")
   const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
   const [policyAccepted, setPolicyAccepted] = useState(false)
@@ -126,19 +138,28 @@ export default function BookingForm() {
   const [error, setError] = useState("")
 
   const dateStr = date ? toDateString(date) : ""
-  const isFriday = date?.getDay() === 5
-  const timeSlots = isFriday ? FRIDAY_SLOTS : ALL_TIME_SLOTS
-  const currentStep: 1 | 2 | 3 = !date ? 1 : !time ? 2 : 3
+  const duration = service ? (SERVICE_DURATIONS[service] ?? 90) : 90
+  const isDrawing = DRAWING_SERVICES.has(service)
+
+  const currentStep: 1 | 2 | 3 | 4 = !service ? 1 : !date ? 2 : !time ? 3 : 4
+
+  const timeSlots = date
+    ? getSlotsForDay(date.getDay(), duration)
+    : []
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
-    if (!service) { setError("נא לבחור שירות."); return }
     if (!name.trim() || name.trim().length < 2) { setError("נא להזין שם מלא (לפחות 2 תווים)."); return }
     if (!phone.trim() || phone.trim().length < 9) { setError("נא להזין מספר טלפון תקין."); return }
     if (!policyAccepted) { setError("יש לאשר את מדיניות הביטולים כדי להמשיך."); return }
-    await addAppointment({ name: name.trim(), phone: phone.trim(), service, date: dateStr, time })
-    setSubmitted(true)
+
+    const result = await addAppointment({ name: name.trim(), phone: phone.trim(), service, date: dateStr, time })
+    if (result.ok) {
+      setSubmitted(true)
+    } else {
+      setError(result.error ?? "שגיאה בהזמנה, נסי שוב.")
+    }
   }
 
   if (submitted) {
@@ -158,7 +179,6 @@ export default function BookingForm() {
           <p className="text-muted-foreground text-sm mt-1">נשמח לראותך בקרוב, {name}!</p>
         </div>
 
-        {/* Add to calendar */}
         <div className="w-full space-y-2">
           <p className="text-xs text-muted-foreground text-center">הוסיפי לו להזמנה ליומן שלך</p>
           <div className="flex gap-2">
@@ -193,9 +213,9 @@ export default function BookingForm() {
             className="flex-1 rounded-full text-sm"
             onClick={() => {
               setSubmitted(false)
+              setService("")
               setDate(undefined)
               setTime("")
-              setService("")
               setName("")
               setPhone("")
               setPolicyAccepted(false)
@@ -215,81 +235,139 @@ export default function BookingForm() {
     <form onSubmit={handleSubmit} className="space-y-8">
       <StepIndicator step={currentStep} />
 
-      {/* Step 1: Date */}
+      {/* Step 1: Service */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <CalendarDays size={16} style={{ color: "oklch(0.55 0.18 222)" }} />
-          <span>בחרי תאריך</span>
+          <Sparkles size={16} style={{ color: "oklch(0.55 0.18 222)" }} />
+          <span>בחרי שירות</span>
         </div>
-        <div className="flex justify-center" dir="ltr">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={(d) => { setDate(d); setTime("") }}
-            disabled={(d) => d < new Date(new Date().setHours(0, 0, 0, 0)) || d.getDay() === 6}
-            className="rounded-xl border border-border/60"
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {SERVICES.map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => { setService(s); setDate(undefined); setTime("") }}
+              className={`py-3 px-4 rounded-xl border text-sm font-medium text-start transition-all duration-200 ${
+                service === s
+                  ? "border-transparent text-primary-foreground"
+                  : "border-border/60 hover:border-primary/40 hover:bg-accent"
+              }`}
+              style={service === s ? { background: "oklch(0.55 0.18 222)" } : {}}
+            >
+              <span className="flex items-center justify-between">
+                {s}
+                <span className={`text-xs font-normal ${service === s ? "text-white/70" : "text-muted-foreground"}`}>
+                  {SERVICE_DURATIONS[s] === 90 ? "שעה וחצי" : SERVICE_DURATIONS[s] === 120 ? "שעתיים" : "3 שעות"}
+                </span>
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Step 2: Time */}
+      {/* WhatsApp notice for drawing services */}
+      {isDrawing && (
+        <div
+          className="flex gap-3 items-start p-4 rounded-2xl border"
+          style={{ background: "oklch(0.97 0.012 135)", borderColor: "oklch(0.75 0.1 135)" }}
+        >
+          <MessageCircle size={18} className="shrink-0 mt-0.5" style={{ color: "oklch(0.45 0.12 135)" }} />
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium" style={{ color: "oklch(0.35 0.1 135)" }}>
+              נדרש תיאום מראש בוואטסאפ
+            </p>
+            <p className="text-xs leading-relaxed" style={{ color: "oklch(0.45 0.08 135)" }}>
+              שירות הציורים דורש תיאום העיצוב עם יובל לפני קביעת התור.
+              אנא צרי קשר בוואטסאפ ותאמי את העיצוב, ורק לאחר מכן קבעי תור.
+            </p>
+            <a
+              href={whatsappHref(`שלום יובל! אני מעוניינת לתאם ${service} 💅`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full mt-1"
+              style={{ background: "oklch(0.55 0.15 135)", color: "white" }}
+            >
+              <MessageCircle size={11} />
+              פתחי וואטסאפ עם יובל
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Step 2: Date */}
+      {service && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <CalendarDays size={16} style={{ color: "oklch(0.55 0.18 222)" }} />
+            <span>בחרי תאריך</span>
+          </div>
+          <div className="flex justify-center" dir="ltr">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={(d) => { setDate(d); setTime("") }}
+              disabled={(d) => {
+                const today = new Date()
+                today.setHours(0, 0, 0, 0)
+                if (d < today) return true
+                if (d.getDay() === 5 || d.getDay() === 6) return true // Friday + Saturday
+                if (isDateFullyBlocked(toDateString(d))) return true
+                return false
+              }}
+              className="rounded-xl border border-border/60"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Step 3: Time */}
       {date && (
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-sm font-medium">
             <Clock size={16} style={{ color: "oklch(0.55 0.18 222)" }} />
             <span>בחרי שעה</span>
+            {date.getDay() === 4 && (
+              <span className="text-xs text-muted-foreground">(יום ה׳ — עד 15:00)</span>
+            )}
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
-            {timeSlots.map((slot) => {
-              const booked = isTimeBooked(dateStr, slot)
-              return (
-                <button
-                  key={slot}
-                  type="button"
-                  disabled={booked}
-                  onClick={() => setTime(slot)}
-                  className={`py-3 px-2 rounded-xl border transition-all duration-200 min-h-[52px] ${
-                    booked
-                      ? "opacity-40 cursor-not-allowed border-border/40 line-through text-muted-foreground"
-                      : time === slot
-                      ? "border-transparent text-primary-foreground"
-                      : "border-border/60 hover:border-primary/40 hover:bg-accent"
-                  }`}
-                  style={time === slot && !booked ? { background: "oklch(0.55 0.18 222)" } : {}}
-                >
-                  <span className="text-xs font-semibold">{slot}</span>
-                </button>
-              )
-            })}
-          </div>
+          {timeSlots.length === 0 ? (
+            <p className="text-sm text-center text-muted-foreground py-4">
+              אין שעות פנויות ביום זה לשירות הנבחר. בחרי תאריך אחר.
+            </p>
+          ) : (
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+              {timeSlots.map((slot) => {
+                const available = isSlotAvailable(dateStr, slot, duration)
+                return (
+                  <button
+                    key={slot}
+                    type="button"
+                    disabled={!available}
+                    onClick={() => setTime(slot)}
+                    className={`py-3 px-2 rounded-xl border transition-all duration-200 min-h-[52px] ${
+                      !available
+                        ? "opacity-40 cursor-not-allowed border-border/40 line-through text-muted-foreground"
+                        : time === slot
+                        ? "border-transparent text-primary-foreground"
+                        : "border-border/60 hover:border-primary/40 hover:bg-accent"
+                    }`}
+                    style={time === slot && available ? { background: "oklch(0.55 0.18 222)" } : {}}
+                  >
+                    <span className="text-xs font-semibold">{slot}</span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
         </div>
       )}
 
-      {/* Step 3: Details */}
+      {/* Step 4: Details */}
       {time && (
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-sm font-medium">
-            <Sparkles size={16} style={{ color: "oklch(0.55 0.18 222)" }} />
+            <User size={16} style={{ color: "oklch(0.55 0.18 222)" }} />
             <span>הפרטים שלך</span>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground flex items-center gap-1">
-              שירות <span className="text-destructive">*</span>
-            </Label>
-            <Select value={service} onValueChange={(val) => val && setService(val)} required>
-              <SelectTrigger
-                className={`rounded-xl h-12 ${!service ? "border-border/60" : "border-border/60"}`}
-                aria-required="true"
-              >
-                <SelectValue placeholder="בחרי שירות..." />
-              </SelectTrigger>
-              <SelectContent>
-                {SERVICES.map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           <div className="space-y-2">
@@ -303,7 +381,6 @@ export default function BookingForm() {
               onChange={(e) => setName(e.target.value)}
               className="rounded-xl border-border/60 h-12"
               required
-              aria-required="true"
               minLength={2}
             />
           </div>
@@ -321,12 +398,11 @@ export default function BookingForm() {
               className="rounded-xl border-border/60 h-12"
               dir="ltr"
               required
-              aria-required="true"
               pattern="[0-9\-\+\s]{9,15}"
             />
           </div>
 
-          {/* Cancellation policy checkbox */}
+          {/* Cancellation policy */}
           <div
             className="flex gap-3 items-start p-4 rounded-2xl border border-border/60"
             style={{ background: "oklch(0.96 0.01 222)" }}
@@ -335,9 +411,7 @@ export default function BookingForm() {
               type="button"
               onClick={() => setPolicyAccepted(!policyAccepted)}
               className={`mt-0.5 w-5 h-5 min-w-5 rounded border-2 transition-all flex items-center justify-center shrink-0 ${
-                policyAccepted
-                  ? "border-transparent"
-                  : "border-border bg-white"
+                policyAccepted ? "border-transparent" : "border-border bg-white"
               }`}
               style={policyAccepted ? { background: "oklch(0.55 0.18 222)" } : {}}
               aria-label="אשרי מדיניות ביטולים"
@@ -357,7 +431,6 @@ export default function BookingForm() {
         </div>
       )}
 
-      {/* Error message */}
       {error && (
         <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/5 rounded-xl px-4 py-3">
           <AlertCircle size={14} className="shrink-0" />

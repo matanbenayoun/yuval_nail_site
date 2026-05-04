@@ -1,35 +1,40 @@
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Sparkles, RefreshCw, Paintbrush, Clock, ArrowLeft, Star } from "lucide-react"
+import { Sparkles, Layers, Paintbrush, Star, Clock, ArrowLeft } from "lucide-react"
 
 const services = [
   {
     icon: Sparkles,
-    name: "מניקור ג'ל",
+    name: "לק ג'ל",
     description: "ציפוי ג'ל עמיד ומבריק עם שכבת הכנה מושלמת. גימור ללא סדקים שנשאר מושלם ל-3-4 שבועות.",
-    duration: "60 דקות",
-    price: "₪180",
+    duration: "שעה וחצי",
+    tag: null,
+    highlight: false,
+  },
+  {
+    icon: Layers,
+    name: "בנייה בג'ל",
+    description: "בניית ציפורניים בג'ל לאורך ועובי מותאמים אישית. תוצאה טבעית ועמידה לטווח ארוך.",
+    duration: "שעתיים",
     tag: null,
     highlight: false,
   },
   {
     icon: Paintbrush,
-    name: "ציורים בלק ג'ל יד",
-    description: "עיצובים מקוריים מצוירים ביד בלק ג'ל — השירות הייחודי של יובל. פרחים, נוף, אבסטרקט ועוד. כל עיצוב חד-פעמי.",
-    duration: "90 דקות",
-    price: "מ-₪220",
-    tag: "הייחוד שלנו",
+    name: "ציור פשוט",
+    description: "עיצובים מצוירים ביד בלק ג'ל — פרחים, גיאומטריה, מינימליזם ועוד. כל עיצוב ייחודי.",
+    duration: "שעתיים",
+    tag: "ייעוץ בוואטסאפ",
     highlight: true,
   },
   {
-    icon: RefreshCw,
-    name: "תוספות ותחזוקה",
-    description: "מילוי לג'ל או אקריל שצמח. עיצוב מחדש, איזון ורענון הסט הקיים למצב מושלם.",
-    duration: "45 דקות",
-    price: "₪140",
-    tag: null,
-    highlight: false,
+    icon: Star,
+    name: "ציור מורכב",
+    description: "ציורים מפורטים ומולטי-שכבתיים — נוף, דמויות, אבסטרקט מורכב. שיתוף פעולה מלא עם יובל.",
+    duration: "שלוש שעות",
+    tag: "ייעוץ בוואטסאפ",
+    highlight: true,
   },
 ]
 
@@ -43,7 +48,7 @@ export default function Services() {
           <div className="w-10 h-0.5 mt-1" style={{ background: "oklch(0.55 0.18 222)" }} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
           {services.map((service) => {
             const Icon = service.icon
             return (
@@ -66,7 +71,6 @@ export default function Services() {
                   </span>
                 )}
 
-                {/* Highlight glow */}
                 {service.highlight && (
                   <div
                     className="absolute inset-0 opacity-5 pointer-events-none"
@@ -74,7 +78,7 @@ export default function Services() {
                   />
                 )}
 
-                <CardContent className="pt-8 pb-7 px-6 flex flex-col gap-4">
+                <CardContent className={`pt-8 pb-7 px-6 flex flex-col gap-4 ${service.tag ? "pt-12" : ""}`}>
                   <div
                     className="w-11 h-11 rounded-full flex items-center justify-center"
                     style={{ background: "oklch(0.90 0.03 222)" }}
@@ -87,17 +91,9 @@ export default function Services() {
                     <p className="text-sm text-muted-foreground leading-relaxed">{service.description}</p>
                   </div>
 
-                  <div className="flex items-center gap-4 pt-2 border-t border-border/50">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <Clock size={12} />
-                      <span>{service.duration}</span>
-                    </div>
-                    <span
-                      className="text-base font-semibold me-auto"
-                      style={{ color: "oklch(0.55 0.18 222)" }}
-                    >
-                      {service.price}
-                    </span>
+                  <div className="flex items-center gap-2 pt-2 border-t border-border/50">
+                    <Clock size={12} className="text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">{service.duration}</span>
                   </div>
                 </CardContent>
               </Card>
