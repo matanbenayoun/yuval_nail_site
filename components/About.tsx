@@ -9,11 +9,11 @@ const highlights = [
 export default function About() {
   return (
     <section id="about" className="py-20 px-5 bg-white">
-      <div className="max-w-2xl mx-auto">
-        <div className="flex flex-col items-center gap-10">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-16">
 
-          {/* Image */}
-          <div className="w-full max-w-[300px]">
+          {/* Image — appears on the right in RTL */}
+          <div className="w-full md:w-[38%] shrink-0">
             <div className="relative">
               {/* Decorative background blob */}
               <div
@@ -28,7 +28,6 @@ export default function About() {
                   background: "linear-gradient(160deg, oklch(0.96 0.012 222) 0%, oklch(0.92 0.025 222) 100%)",
                 }}
               >
-                {/* Floating sparkles for visual interest */}
                 <div
                   className="absolute top-6 end-6 w-2 h-2 rounded-full opacity-40"
                   style={{ background: "oklch(0.55 0.18 222)" }}
@@ -59,11 +58,11 @@ export default function About() {
           </div>
 
           {/* Text content */}
-          <div className="flex flex-col gap-6 w-full text-center">
+          <div className="flex flex-col gap-6 flex-1 text-center md:text-start">
             {/* Section header */}
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center md:items-start gap-3">
               <span className="text-xs tracking-widest text-muted-foreground">קצת עליי</span>
-              <h2 className="text-3xl font-semibold">שמי יובל סין ראובן</h2>
+              <h2 className="text-3xl md:text-5xl font-semibold">שמי יובל<br className="hidden md:block" /> סין ראובן</h2>
               <div className="w-10 h-0.5" style={{ background: "oklch(0.55 0.18 222)" }} />
             </div>
 
@@ -80,7 +79,7 @@ export default function About() {
             {/* Highlights */}
             <div className="flex flex-col gap-3 pt-2">
               {highlights.map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-3 justify-center">
+                <div key={text} className="flex items-center gap-3 justify-center md:justify-start">
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
                     style={{ background: "oklch(0.90 0.03 222)" }}

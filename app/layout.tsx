@@ -20,6 +20,7 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   title: "יובל סין ראובן - ציפורניים",
   description: "עיצוב ציפורניים מקצועי ואישי. הזמיני תור אונליין.",
+  other: { "color-scheme": "light" },
 }
 
 export default function RootLayout({

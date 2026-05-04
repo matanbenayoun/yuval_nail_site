@@ -46,10 +46,10 @@ export default function ColorPalette() {
 
   return (
     <section className="py-16 px-5 bg-white">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="flex flex-col items-center text-center mb-10 gap-3">
           <span className="text-xs tracking-widest text-muted-foreground">הגוונים שלנו</span>
-          <h2 className="text-3xl font-semibold">מנעד הגוונים שלי</h2>
+          <h2 className="text-3xl md:text-4xl font-semibold">מנעד הגוונים שלי</h2>
           <div className="w-10 h-0.5 mt-1" style={{ background: "oklch(0.55 0.18 222)" }} />
           <p className="text-sm text-muted-foreground mt-1 max-w-xs">
             מגוון גוונים לכל מצב רוח וסגנון — מניוטרל עדין ועד אדום נועז.

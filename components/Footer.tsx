@@ -6,10 +6,10 @@ import { SITE_CONFIG, whatsappHref } from "@/lib/config"
 export default function Footer() {
   return (
     <footer className="border-t border-border/60 py-10 px-5">
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-8">
 
         {/* Top row */}
-        <div className="flex flex-col items-center gap-6 text-center">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-start">
           <div className="flex flex-col gap-1">
             <span className="text-base font-semibold">{SITE_CONFIG.name}</span>
             <span className="text-xs text-muted-foreground tracking-wide">
@@ -94,7 +94,7 @@ export default function Footer() {
 
       </div>
 
-      <div className="max-w-2xl mx-auto mt-6 pt-5 border-t border-border/40 text-center">
+      <div className="max-w-6xl mx-auto mt-6 pt-5 border-t border-border/40 text-center">
         <p className="text-xs text-muted-foreground">
           © {new Date().getFullYear()} {SITE_CONFIG.name} — {SITE_CONFIG.subtitle}. כל הזכויות שמורות.
         </p>
